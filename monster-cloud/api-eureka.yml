@@ -1,0 +1,37 @@
+#设置服务注册与发现中心的端口
+server:
+  port: 8761
+
+#在微服务架构中，服务中心是通过服务应用的名称来区分每个服务的
+#我们在创建每一个服务之后，指定当前服务的应用名/项目名
+spring:
+  #设置采样率默认为 0.1 注意之前的版本是percentage 新版本中更换为 probability
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://localhost:9411/
+    service:
+      name: api-eureka
+    sender:
+      type: web
+  #-------
+  application:
+    name: api-eureka
+  #拦截
+  security:
+    user:
+      name: mr
+      password: 123456
+
+## 注册中心是可以集群的
+eureka:
+  client:
+    ## ip 就是服务注册中心的服务器的ip
+    ## port 就是服务注册与发现中心设置的port
+    service-url:
+      defultZone : http://localhost:8761/eureka  #注册路径
+    ## 设置服务注册与服务中心是否为集群模式 /false
+    register-with-eureka: false
+    ## 设置服务注册与发现中是否作为服务，进行注册 /false
+    fetch-registry: false

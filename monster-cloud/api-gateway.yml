@@ -1,0 +1,53 @@
+server:
+  port: 9875
+
+spring:
+  #设置采样率默认为 0.1 注意之前的版本是percentage 新版本中更换为 probability
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://localhost:9411/
+    service:
+      name: gateway-server
+    sender:
+      type: web
+  #********
+  application:
+    name: gateway-server
+  main:
+    #设置不使用 mvc
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        # --- chat，mall，blog 登录
+        - id: login
+          uri: lb://api-login
+          predicates:
+            - Path=/chat/login/**
+        # ---- chat查询好友列表
+        - id: contacts
+          uri: lb://api-chat-contacts
+          predicates:
+            - Path=/chat/contacts/**,/chat/msg/add/**
+#---------------------------------------------
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    lettuce:
+      pool:
+        # 最大连接数
+        max-active: 10
+        # 最大等待时间
+        max-wait: 1000
+        # 最大空闲时间
+        max-idle: 5
+        # 最小空闲时间
+        min-idle: 3
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://mr:123456@localhost:8761/eureka
